@@ -1,8 +1,3 @@
-from PyQt5.QtCore import pyqtSlot
-from PyQt5.QtWidgets import QLabel, QPushButton
-from PyQt5.QtWidgets import QMainWindow
-from PyQt5.QtWidgets import QApplication
-import sys
 from reportlab.pdfgen import canvas
 from reportlab.platypus import (SimpleDocTemplate, Paragraph, PageBreak, Image, Spacer, Table, TableStyle)
 from reportlab.lib.enums import TA_LEFT, TA_RIGHT, TA_CENTER, TA_JUSTIFY
@@ -10,57 +5,6 @@ from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.pagesizes import LETTER, inch
 from reportlab.graphics.shapes import Line, LineShape, Drawing
 from reportlab.lib.colors import Color
-
-
-class Window(QMainWindow):
-    def __init__(self):
-        super().__init__()
-        self.itemcount = 0
-        self.files = []
-
-        self.setStyleSheet("QMainWindow {background: '#3A3B41';}")
-
-        # set the title
-        self.setWindowTitle("Portfoliolio")
-        self.setAcceptDrops(True)
-
-        # setting the geometry of window
-        self.setGeometry(0, 0, 400, 300)
-
-        # creating a label widget
-        # by default label will display at top left corner
-        self.label = QLabel('Drag photos here...', self)
-        self.label.setStyleSheet("QLabel {color: 'white';}")
-        self.label.setFixedWidth(500)
-        # self.labels.append(label)
-
-        self.button = QPushButton('PyQt5 button', self)
-        self.button.setToolTip('This is an example button')
-        self.button.move(100, 70)
-        self.button.clicked.connect(self.on_click)
-
-        # show all the widgets
-        self.show()
-
-    @pyqtSlot()
-    def on_click(self):
-        print('PyQt5 button clicked')
-        report = BasicPortfolio('test.pdf', self.files)
-
-    def dragEnterEvent(self, event):
-        if event.mimeData().hasUrls():
-            event.accept()
-        else:
-            event.ignore()
-
-    def dropEvent(self, event):
-        files = [u.toLocalFile() for u in event.mimeData().urls()]
-        for f in files:
-            print(f)
-            self.files.append(f)
-
-        self.label.setText("\n".join(self.files))
-
 
 class FooterCanvas(canvas.Canvas):
 
@@ -88,16 +32,13 @@ class FooterCanvas(canvas.Canvas):
         self.saveState()
         self.setStrokeColorRGB(0, 0, 0)
         self.setLineWidth(0.5)
-        self.drawImage("static/lr.png", self.width - inch * 8 - 5, self.height - 50, width=100, height=20,
-                       preserveAspectRatio=True)
-        self.drawImage("static/ohka.png", self.width - inch * 2, self.height - 50, width=100, height=30,
-                       preserveAspectRatio=True, mask='auto')
+        self.drawImage("static/lr.png", self.width-inch*8-5, self.height-50, width=100, height=20, preserveAspectRatio=True)
+        self.drawImage("static/ohka.png", self.width - inch * 2, self.height-50, width=100, height=30, preserveAspectRatio=True, mask='auto')
         self.line(30, 740, LETTER[0] - 50, 740)
         self.line(66, 78, LETTER[0] - 66, 78)
         self.setFont('Times-Roman', 10)
-        self.drawString(LETTER[0] - x, 65, page)
+        self.drawString(LETTER[0]-x, 65, page)
         self.restoreState()
-
 
 class BasicPortfolio:
 
@@ -107,13 +48,13 @@ class BasicPortfolio:
         self.elements = []
 
         # colors - Azul turkeza 367AB3
-        self.colorOhkaGreen0 = Color((45.0 / 255), (166.0 / 255), (153.0 / 255), 1)
-        self.colorOhkaGreen1 = Color((182.0 / 255), (227.0 / 255), (166.0 / 255), 1)
-        self.colorOhkaGreen2 = Color((140.0 / 255), (222.0 / 255), (192.0 / 255), 1)
-        # self.colorOhkaGreen2 = Color((140.0/255), (222.0/255), (192.0/255), 1)
-        self.colorOhkaBlue0 = Color((54.0 / 255), (122.0 / 255), (179.0 / 255), 1)
-        self.colorOhkaBlue1 = Color((122.0 / 255), (180.0 / 255), (225.0 / 255), 1)
-        self.colorOhkaGreenLineas = Color((50.0 / 255), (140.0 / 255), (140.0 / 255), 1)
+        self.colorOhkaGreen0 = Color((45.0/255), (166.0/255), (153.0/255), 1)
+        self.colorOhkaGreen1 = Color((182.0/255), (227.0/255), (166.0/255), 1)
+        self.colorOhkaGreen2 = Color((140.0/255), (222.0/255), (192.0/255), 1)
+        #self.colorOhkaGreen2 = Color((140.0/255), (222.0/255), (192.0/255), 1)
+        self.colorOhkaBlue0 = Color((54.0/255), (122.0/255), (179.0/255), 1)
+        self.colorOhkaBlue1 = Color((122.0/255), (180.0/255), (225.0/255), 1)
+        self.colorOhkaGreenLineas = Color((50.0/255), (140.0/255), (140.0/255), 1)
         #
         for i in photos:
             self.photopage(i)
@@ -125,8 +66,8 @@ class BasicPortfolio:
 
     def firstPage(self):
         img = Image('static/lr.png', kind='proportional')
-        img.drawHeight = 0.5 * inch
-        img.drawWidth = 2.4 * inch
+        img.drawHeight = 0.5*inch
+        img.drawWidth = 2.4*inch
         img.hAlign = 'LEFT'
         self.elements.append(img)
 
@@ -134,15 +75,14 @@ class BasicPortfolio:
         self.elements.append(spacer)
 
         img = Image('static/ohka.png')
-        img.drawHeight = 2.5 * inch
-        img.drawWidth = 5.5 * inch
+        img.drawHeight = 2.5*inch
+        img.drawWidth = 5.5*inch
         self.elements.append(img)
 
         spacer = Spacer(10, 250)
         self.elements.append(spacer)
 
-        psDetalle = ParagraphStyle('Resumen', fontSize=9, leading=14, justifyBreaks=1, alignment=TA_LEFT,
-                                   justifyLastLine=1)
+        psDetalle = ParagraphStyle('Resumen', fontSize=9, leading=14, justifyBreaks=1, alignment=TA_LEFT, justifyLastLine=1)
         text = """REPORTE DE SERVICIOS PROFESIONALES<br/>
         Empresa: Nombre del Cliente<br/>
         Fecha de Inicio: 23-Oct-2019<br/>
@@ -157,15 +97,14 @@ class BasicPortfolio:
         self.elements.append(spacer)
 
         img = Image(photourl)
-        img.drawHeight = 2.5 * inch
-        img.drawWidth = 5.5 * inch
+        img.drawHeight = 2.5*inch
+        img.drawWidth = 5.5*inch
         self.elements.append(img)
 
         spacer = Spacer(10, 250)
         self.elements.append(spacer)
 
-        psDetalle = ParagraphStyle('Resumen', fontSize=9, leading=14, justifyBreaks=1, alignment=TA_LEFT,
-                                   justifyLastLine=1)
+        psDetalle = ParagraphStyle('Resumen', fontSize=9, leading=14, justifyBreaks=1, alignment=TA_LEFT, justifyLastLine=1)
         text = """Elizabeth Holmes<br/>
         Mobile: 313-717-2496<br/>
         Email: el.holmes@gmail.com<br/>
@@ -177,8 +116,7 @@ class BasicPortfolio:
 
     def nextPagesHeader(self, isSecondPage):
         if isSecondPage:
-            psHeaderText = ParagraphStyle('Hed0', fontSize=16, alignment=TA_LEFT, borderWidth=3,
-                                          textColor=self.colorOhkaGreen0)
+            psHeaderText = ParagraphStyle('Hed0', fontSize=16, alignment=TA_LEFT, borderWidth=3, textColor=self.colorOhkaGreen0)
             text = 'REPORTE DE SESIONES'
             paragraphReportHeader = Paragraph(text, psHeaderText)
             self.elements.append(paragraphReportHeader)
@@ -206,9 +144,8 @@ class BasicPortfolio:
             spacer = Spacer(10, 22)
             self.elements.append(spacer)
 
-    def remoteSessionTableMaker(self):
-        psHeaderText = ParagraphStyle('Hed0', fontSize=12, alignment=TA_LEFT, borderWidth=3,
-                                      textColor=self.colorOhkaBlue0)
+    def remoteSessionTableMaker(self):        
+        psHeaderText = ParagraphStyle('Hed0', fontSize=12, alignment=TA_LEFT, borderWidth=3, textColor=self.colorOhkaBlue0)
         text = 'SESIONES REMOTAS'
         paragraphReportHeader = Paragraph(text, psHeaderText)
         self.elements.append(paragraphReportHeader)
@@ -220,13 +157,13 @@ class BasicPortfolio:
         """
         d = []
         textData = ["No.", "Fecha", "Hora Inicio", "Hora Fin", "Tiempo Total"]
-
+                
         fontSize = 8
         centered = ParagraphStyle(name="centered", alignment=TA_CENTER)
         for text in textData:
             ptext = "<font size='%s'><b>%s</b></font>" % (fontSize, text)
             titlesTable = Paragraph(ptext, centered)
-            d.append(titlesTable)
+            d.append(titlesTable)        
 
         data = [d]
         lineNum = 1
@@ -239,44 +176,43 @@ class BasicPortfolio:
                       ParagraphStyle(name="05", alignment=TA_CENTER)]
 
         for row in range(10):
-            lineData = [str(lineNum), "Miércoles, 11 de diciembre de 2019",
-                        "17:30", "19:24", "1:54"]
-            # data.append(lineData)
+            lineData = [str(lineNum), "Miércoles, 11 de diciembre de 2019", 
+                                            "17:30", "19:24", "1:54"]
+            #data.append(lineData)
             columnNumber = 0
             for item in lineData:
-                ptext = "<font size='%s'>%s</font>" % (fontSize - 1, item)
+                ptext = "<font size='%s'>%s</font>" % (fontSize-1, item)
                 p = Paragraph(ptext, alignStyle[columnNumber])
                 formattedLineData.append(p)
                 columnNumber = columnNumber + 1
             data.append(formattedLineData)
             formattedLineData = []
-
+            
         # Row for total
         totalRow = ["Total de Horas", "", "", "", "30:15"]
         for item in totalRow:
-            ptext = "<font size='%s'>%s</font>" % (fontSize - 1, item)
+            ptext = "<font size='%s'>%s</font>" % (fontSize-1, item)
             p = Paragraph(ptext, alignStyle[1])
             formattedLineData.append(p)
         data.append(formattedLineData)
-
-        # print(data)
+        
+        #print(data)
         table = Table(data, colWidths=[50, 200, 80, 80, 80])
-        tStyle = TableStyle([  # ('GRID',(0, 0), (-1, -1), 0.5, grey),
-            ('ALIGN', (0, 0), (0, -1), 'LEFT'),
-            # ('VALIGN', (0, 0), (-1, -1), 'TOP'),
-            ("ALIGN", (1, 0), (1, -1), 'RIGHT'),
-            ('LINEABOVE', (0, 0), (-1, -1), 1, self.colorOhkaBlue1),
-            ('BACKGROUND', (0, 0), (-1, 0), self.colorOhkaGreenLineas),
-            ('BACKGROUND', (0, -1), (-1, -1), self.colorOhkaBlue1),
-            ('SPAN', (0, -1), (-2, -1))
-        ])
+        tStyle = TableStyle([ #('GRID',(0, 0), (-1, -1), 0.5, grey),
+                ('ALIGN', (0, 0), (0, -1), 'LEFT'),
+                #('VALIGN', (0, 0), (-1, -1), 'TOP'),
+                ("ALIGN", (1, 0), (1, -1), 'RIGHT'),
+                ('LINEABOVE', (0, 0), (-1, -1), 1, self.colorOhkaBlue1),
+                ('BACKGROUND',(0, 0), (-1, 0), self.colorOhkaGreenLineas),
+                ('BACKGROUND',(0, -1),(-1, -1), self.colorOhkaBlue1),
+                ('SPAN',(0,-1),(-2,-1))
+                ])
         table.setStyle(tStyle)
         self.elements.append(table)
 
     def inSiteSessionTableMaker(self):
         self.elements.append(PageBreak())
-        psHeaderText = ParagraphStyle('Hed0', fontSize=12, alignment=TA_LEFT, borderWidth=3,
-                                      textColor=self.colorOhkaBlue0)
+        psHeaderText = ParagraphStyle('Hed0', fontSize=12, alignment=TA_LEFT, borderWidth=3, textColor=self.colorOhkaBlue0)
         text = 'SESIONES EN SITIO'
         paragraphReportHeader = Paragraph(text, psHeaderText)
         self.elements.append(paragraphReportHeader)
@@ -288,13 +224,13 @@ class BasicPortfolio:
         """
         d = []
         textData = ["No.", "Fecha", "Hora Inicio", "Hora Fin", "Tiempo Total"]
-
+                
         fontSize = 8
         centered = ParagraphStyle(name="centered", alignment=TA_CENTER)
         for text in textData:
             ptext = "<font size='%s'><b>%s</b></font>" % (fontSize, text)
             titlesTable = Paragraph(ptext, centered)
-            d.append(titlesTable)
+            d.append(titlesTable)        
 
         data = [d]
         lineNum = 1
@@ -307,44 +243,43 @@ class BasicPortfolio:
                       ParagraphStyle(name="05", alignment=TA_CENTER)]
 
         for row in range(10):
-            lineData = [str(lineNum), "Miércoles, 11 de diciembre de 2019",
-                        "17:30", "19:24", "1:54"]
-            # data.append(lineData)
+            lineData = [str(lineNum), "Miércoles, 11 de diciembre de 2019", 
+                                            "17:30", "19:24", "1:54"]
+            #data.append(lineData)
             columnNumber = 0
             for item in lineData:
-                ptext = "<font size='%s'>%s</font>" % (fontSize - 1, item)
+                ptext = "<font size='%s'>%s</font>" % (fontSize-1, item)
                 p = Paragraph(ptext, alignStyle[columnNumber])
                 formattedLineData.append(p)
                 columnNumber = columnNumber + 1
             data.append(formattedLineData)
             formattedLineData = []
-
+            
         # Row for total
         totalRow = ["Total de Horas", "", "", "", "30:15"]
         for item in totalRow:
-            ptext = "<font size='%s'>%s</font>" % (fontSize - 1, item)
+            ptext = "<font size='%s'>%s</font>" % (fontSize-1, item)
             p = Paragraph(ptext, alignStyle[1])
             formattedLineData.append(p)
         data.append(formattedLineData)
-
-        # print(data)
+        
+        #print(data)
         table = Table(data, colWidths=[50, 200, 80, 80, 80])
-        tStyle = TableStyle([  # ('GRID',(0, 0), (-1, -1), 0.5, grey),
-            ('ALIGN', (0, 0), (0, -1), 'LEFT'),
-            # ('VALIGN', (0, 0), (-1, -1), 'TOP'),
-            ("ALIGN", (1, 0), (1, -1), 'RIGHT'),
-            ('LINEABOVE', (0, 0), (-1, -1), 1, self.colorOhkaBlue1),
-            ('BACKGROUND', (0, 0), (-1, 0), self.colorOhkaGreenLineas),
-            ('BACKGROUND', (0, -1), (-1, -1), self.colorOhkaBlue1),
-            ('SPAN', (0, -1), (-2, -1))
-        ])
+        tStyle = TableStyle([ #('GRID',(0, 0), (-1, -1), 0.5, grey),
+                ('ALIGN', (0, 0), (0, -1), 'LEFT'),
+                #('VALIGN', (0, 0), (-1, -1), 'TOP'),
+                ("ALIGN", (1, 0), (1, -1), 'RIGHT'),
+                ('LINEABOVE', (0, 0), (-1, -1), 1, self.colorOhkaBlue1),
+                ('BACKGROUND',(0, 0), (-1, 0), self.colorOhkaGreenLineas),
+                ('BACKGROUND',(0, -1),(-1, -1), self.colorOhkaBlue1),
+                ('SPAN',(0,-1),(-2,-1))
+                ])
         table.setStyle(tStyle)
         self.elements.append(table)
 
     def extraActivitiesTableMaker(self):
         self.elements.append(PageBreak())
-        psHeaderText = ParagraphStyle('Hed0', fontSize=12, alignment=TA_LEFT, borderWidth=3,
-                                      textColor=self.colorOhkaBlue0)
+        psHeaderText = ParagraphStyle('Hed0', fontSize=12, alignment=TA_LEFT, borderWidth=3, textColor=self.colorOhkaBlue0)
         text = 'OTRAS ACTIVIDADES Y DOCUMENTACIÓN'
         paragraphReportHeader = Paragraph(text, psHeaderText)
         self.elements.append(paragraphReportHeader)
@@ -356,13 +291,13 @@ class BasicPortfolio:
         """
         d = []
         textData = ["No.", "Fecha", "Hora Inicio", "Hora Fin", "Tiempo Total"]
-
+                
         fontSize = 8
         centered = ParagraphStyle(name="centered", alignment=TA_CENTER)
         for text in textData:
             ptext = "<font size='%s'><b>%s</b></font>" % (fontSize, text)
             titlesTable = Paragraph(ptext, centered)
-            d.append(titlesTable)
+            d.append(titlesTable)        
 
         data = [d]
         lineNum = 1
@@ -375,44 +310,43 @@ class BasicPortfolio:
                       ParagraphStyle(name="05", alignment=TA_CENTER)]
 
         for row in range(10):
-            lineData = [str(lineNum), "Miércoles, 11 de diciembre de 2019",
-                        "17:30", "19:24", "1:54"]
-            # data.append(lineData)
+            lineData = [str(lineNum), "Miércoles, 11 de diciembre de 2019", 
+                                            "17:30", "19:24", "1:54"]
+            #data.append(lineData)
             columnNumber = 0
             for item in lineData:
-                ptext = "<font size='%s'>%s</font>" % (fontSize - 1, item)
+                ptext = "<font size='%s'>%s</font>" % (fontSize-1, item)
                 p = Paragraph(ptext, alignStyle[columnNumber])
                 formattedLineData.append(p)
                 columnNumber = columnNumber + 1
             data.append(formattedLineData)
             formattedLineData = []
-
+            
         # Row for total
         totalRow = ["Total de Horas", "", "", "", "30:15"]
         for item in totalRow:
-            ptext = "<font size='%s'>%s</font>" % (fontSize - 1, item)
+            ptext = "<font size='%s'>%s</font>" % (fontSize-1, item)
             p = Paragraph(ptext, alignStyle[1])
             formattedLineData.append(p)
         data.append(formattedLineData)
-
-        # print(data)
+        
+        #print(data)
         table = Table(data, colWidths=[50, 200, 80, 80, 80])
-        tStyle = TableStyle([  # ('GRID',(0, 0), (-1, -1), 0.5, grey),
-            ('ALIGN', (0, 0), (0, -1), 'LEFT'),
-            # ('VALIGN', (0, 0), (-1, -1), 'TOP'),
-            ("ALIGN", (1, 0), (1, -1), 'RIGHT'),
-            ('LINEABOVE', (0, 0), (-1, -1), 1, self.colorOhkaBlue1),
-            ('BACKGROUND', (0, 0), (-1, 0), self.colorOhkaGreenLineas),
-            ('BACKGROUND', (0, -1), (-1, -1), self.colorOhkaBlue1),
-            ('SPAN', (0, -1), (-2, -1))
-        ])
+        tStyle = TableStyle([ #('GRID',(0, 0), (-1, -1), 0.5, grey),
+                ('ALIGN', (0, 0), (0, -1), 'LEFT'),
+                #('VALIGN', (0, 0), (-1, -1), 'TOP'),
+                ("ALIGN", (1, 0), (1, -1), 'RIGHT'),
+                ('LINEABOVE', (0, 0), (-1, -1), 1, self.colorOhkaBlue1),
+                ('BACKGROUND',(0, 0), (-1, 0), self.colorOhkaGreenLineas),
+                ('BACKGROUND',(0, -1),(-1, -1), self.colorOhkaBlue1),
+                ('SPAN',(0,-1),(-2,-1))
+                ])
         table.setStyle(tStyle)
         self.elements.append(table)
 
     def summaryTableMaker(self):
         self.elements.append(PageBreak())
-        psHeaderText = ParagraphStyle('Hed0', fontSize=12, alignment=TA_LEFT, borderWidth=3,
-                                      textColor=self.colorOhkaBlue0)
+        psHeaderText = ParagraphStyle('Hed0', fontSize=12, alignment=TA_LEFT, borderWidth=3, textColor=self.colorOhkaBlue0)
         text = 'REGISTRO TOTAL DE HORAS'
         paragraphReportHeader = Paragraph(text, psHeaderText)
         self.elements.append(paragraphReportHeader)
@@ -424,12 +358,12 @@ class BasicPortfolio:
         """
 
         tStyle = TableStyle([
-            ('ALIGN', (0, 0), (0, -1), 'LEFT'),
-            # ('VALIGN', (0, 0), (-1, -1), 'TOP'),
-            ("ALIGN", (1, 0), (1, -1), 'RIGHT'),
-            ('LINEABOVE', (0, 0), (-1, -1), 1, self.colorOhkaBlue1),
-            ('BACKGROUND', (-2, -1), (-1, -1), self.colorOhkaGreen2)
-        ])
+                   ('ALIGN', (0, 0), (0, -1), 'LEFT'),
+                   #('VALIGN', (0, 0), (-1, -1), 'TOP'),
+                   ("ALIGN", (1, 0), (1, -1), 'RIGHT'),
+                   ('LINEABOVE', (0, 0), (-1, -1), 1, self.colorOhkaBlue1),
+                   ('BACKGROUND',(-2, -1),(-1, -1), self.colorOhkaGreen2)
+                   ])
 
         fontSize = 8
         lineData = [["Sesiones remotas", "30:15"],
@@ -466,22 +400,17 @@ class BasicPortfolio:
 
         table = Table(lineData, colWidths=[400, 100])
         tStyle = TableStyle([
-            ('ALIGN', (0, 0), (0, -1), 'LEFT'),
-            ("ALIGN", (1, 0), (1, -1), 'RIGHT'),
-            ('BACKGROUND', (0, 0), (1, 0), self.colorOhkaBlue1),
-            ('BACKGROUND', (0, 1), (1, 1), self.colorOhkaGreen1),
-        ])
+                ('ALIGN', (0, 0), (0, -1), 'LEFT'),
+                ("ALIGN", (1, 0), (1, -1), 'RIGHT'),
+                ('BACKGROUND', (0, 0), (1, 0), self.colorOhkaBlue1),
+                ('BACKGROUND', (0, 1), (1, 1), self.colorOhkaGreen1),
+                ])
         table.setStyle(tStyle)
 
         spacer = Spacer(10, 50)
         self.elements.append(spacer)
         self.elements.append(table)
 
-# create pyqt5 app
-App = QApplication(sys.argv)
 
-# create the instance of our Window
-window = Window()
-
-# start the app
-sys.exit(App.exec())
+if __name__ == '__main__':
+    report = BasicPortfolio('test.pdf', photos)
