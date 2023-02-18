@@ -5,3 +5,4 @@ venv
 *.spec
 .DS_Store
 pycvenv
+*.pdf

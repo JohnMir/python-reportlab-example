@@ -10,6 +10,7 @@ from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.pagesizes import LETTER, inch
 from reportlab.graphics.shapes import Line, LineShape, Drawing
 from reportlab.lib.colors import Color
+from datetime import datetime
 
 
 class Window(QMainWindow):
@@ -34,7 +35,7 @@ class Window(QMainWindow):
         self.label.setFixedWidth(500)
         # self.labels.append(label)
 
-        self.button = QPushButton('PyQt5 button', self)
+        self.button = QPushButton('Generate', self)
         self.button.setToolTip('This is an example button')
         self.button.move(100, 70)
         self.button.clicked.connect(self.on_click)
@@ -44,8 +45,10 @@ class Window(QMainWindow):
 
     @pyqtSlot()
     def on_click(self):
-        print('PyQt5 button clicked')
-        report = BasicPortfolio('test.pdf', self.files)
+        filename = datetime.now().strftime("%Y-%m-%d %H-%M-%S")
+        print(f'Portfolio generating... {filename}')
+        BasicPortfolio(f'{filename}.pdf', self.files)
+        print(f'Portfolio done! {filename}')
 
     def dragEnterEvent(self, event):
         if event.mimeData().hasUrls():
