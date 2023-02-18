@@ -7,6 +7,8 @@ PDF Report example with a front-page, header, footer and table
 ## Color terminal
 ## 
 
+https://doc.qt.io/qtforpython-5/PySide2/QtWidgets/QLabel.html
+
 # Workflow
 drag.py gets filenames
 create.py creates pdf with images on each page
