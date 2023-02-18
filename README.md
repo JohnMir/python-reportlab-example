@@ -15,11 +15,13 @@ create.py creates pdf with images on each page
 Install pyinstaller: 
 ```
 pip install pyinstaller
+pip install reportlab
+pip install PyQt5
 ```
 
 Create executable:
 ```
-pyinstaller --onefile yourscriptname.py
+pyinstaller --onefile dragtest.py
 ```
 
 

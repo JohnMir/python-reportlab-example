@@ -15,4 +15,5 @@ for i in inputsplit:
 
 #if __name__ == '__main__':
  #   print('hi')
+input("Press enter to exit...")
 print('done')
