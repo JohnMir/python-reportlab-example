@@ -21,7 +21,7 @@ from PyQt5.QtWidgets import (
     QSpinBox,
     QTimeEdit,
     QVBoxLayout,
-    QWidget, QBoxLayout, QFormLayout, QGroupBox,
+    QWidget, QBoxLayout, QFormLayout, QGroupBox, QHBoxLayout,
 )
 
 debug_background=True
@@ -40,37 +40,43 @@ styles = {
 # label.setPixmap(pixmap)
 class MainWindow(QMainWindow):
 
-    # Take a string
-    # Add a QLabel with the string as text to the vbox
-    def addPhotoElement(self, filename):
-        label = QLabel(filename)
-        label.setStyleSheet(styles['files'])
-        label.setFixedWidth(500)
-        self.filebox.addWidget(label)
+    # Update filelabel text with number of buttonlabel_containers in filebox
+    # Copilot is a godsend
+    def updateFileLabel(self):
+        self.filebox.parent().setTitle(f'Photos ({len(self.filebox.children())})')
 
     # Add a QPushButton and QLabel to self.filebox
     # When the button is clicked, the label should be removed from the box
     def addRemoveButton(self, filename):
+        buttonlabel_container = QHBoxLayout()
+
         label = QLabel(filename)
         label.setStyleSheet(styles['files'])
         label.setFixedWidth(200)
+
         button = QPushButton("Remove")
         button.setFixedWidth(60)
-        button.clicked.connect(lambda: self.removePhotoElement(label))
-        self.filebox.addWidget(button)
-        self.filebox.addWidget(label)
+        button.clicked.connect(lambda: self.removePhotoElement(buttonlabel_container))
 
-        # Remove the given widget from self.filebox
+        buttonlabel_container.addWidget(button)
+        buttonlabel_container.addWidget(label)
 
+        self.filebox.addLayout(buttonlabel_container)
+        self.updateFileLabel()
+
+    # TODO add post function annotation to refresh all widgets that have internal logic
     def removePhotoElement(self, widget):
-        self.filebox.removeWidget(widget)
-        widget.deleteLater()
-        widget = None
+        try:
+            self.filebox.removeItem(widget)
+            widget.deleteLater()
+            widget = None
+            self.updateFileLabel()
+        except Exception as e:
+            print('error removing:', e)
+
 
     def __init__(self):
         super().__init__()
-
-        self.filelist = []
 
         self.setWindowTitle("Portfoliolio")
         self.setAcceptDrops(True)
@@ -83,21 +89,22 @@ class MainWindow(QMainWindow):
         dropzone.setFixedWidth(120)
         dropzone.setFixedHeight(80)
 
-        files = QGroupBox("Photos")
+        files = QGroupBox("Photos (0)")
         files.setStyleSheet(styles['files'])
         vbox = QVBoxLayout()
         files.setLayout(vbox)
         self.filebox = vbox
+        files.setTitle(f'Photos ({len(self.filebox.children())})')
         # vbox.addWidget(radiobutton)
 
-        filelabel = QLabel(f'Photos ({len(self.filelist)})')
-        self.filelabel = filelabel
-        filelabel.setStyleSheet(styles['files'])
-        filelabel.setFixedWidth(500)
+        # filelabel = QLabel(f'Photos ({len(self.filebox)})')
+        # self.filelabel = filelabel
+        # filelabel.setStyleSheet(styles['files'])
+        # filelabel.setFixedWidth(500)
 
         layout = QFormLayout()
 
-        vbox.addWidget(filelabel)
+        # self.filebox.addWidget(filelabel)
 
         instantiated_widgets = [files, dropzone]
 
@@ -138,10 +145,9 @@ class MainWindow(QMainWindow):
         files = [u.toLocalFile() for u in event.mimeData().urls()]
         for f in files:
             print(f)
-            # self.filelist.append(f)
             self.addRemoveButton(f)
 
-        self.filelabel.setText(f'Photos ({len(self.filelist)})\n------\n' + "\n".join(self.filelist))
+        # self.filelabel.setText(f'Photos ({len(self.filelist)})\n------\n' + "\n".join(self.filelist))
 
     def dragEnterEvent(self, event):
         if event.mimeData().hasUrls():
