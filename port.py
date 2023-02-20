@@ -21,10 +21,10 @@ from PyQt5.QtWidgets import (
     QSpinBox,
     QTimeEdit,
     QVBoxLayout,
-    QWidget, QBoxLayout, QFormLayout, QGroupBox, QHBoxLayout,
+    QWidget, QFormLayout, QGroupBox, QHBoxLayout,
 )
 
-debug_background=True
+debug_background = True
 
 styles = {
     'files': "QLabel {color: 'white';background: '#3A3B41';} QGroupBox {color: 'white';}",
@@ -33,6 +33,25 @@ styles = {
     'generate': "",
 }
 
+debug_all = False
+all_widgets = [
+    QCheckBox,
+    QComboBox,
+    QDateEdit,
+    QDateTimeEdit,
+    QDial,
+    QDoubleSpinBox,
+    QFontComboBox,
+    QLCDNumber,
+    QLabel,
+    QLineEdit,
+    QProgressBar,
+    QPushButton,
+    QRadioButton,
+    QSlider,
+    QSpinBox,
+    QTimeEdit,
+]
 
 
 # Subclass QMainWindow to customize your application's main window
@@ -74,7 +93,6 @@ class MainWindow(QMainWindow):
         except Exception as e:
             print('error removing:', e)
 
-
     def __init__(self):
         super().__init__()
 
@@ -95,59 +113,27 @@ class MainWindow(QMainWindow):
         files.setLayout(vbox)
         self.filebox = vbox
         files.setTitle(f'Photos ({len(self.filebox.children())})')
-        # vbox.addWidget(radiobutton)
-
-        # filelabel = QLabel(f'Photos ({len(self.filebox)})')
-        # self.filelabel = filelabel
-        # filelabel.setStyleSheet(styles['files'])
-        # filelabel.setFixedWidth(500)
 
         layout = QFormLayout()
 
-        # self.filebox.addWidget(filelabel)
-
         instantiated_widgets = [files, dropzone]
-
-        widgets = [
-            QCheckBox,
-            QComboBox,
-            QDateEdit,
-            QDateTimeEdit,
-            QDial,
-            QDoubleSpinBox,
-            QFontComboBox,
-            QLCDNumber,
-            QLabel,
-            QLineEdit,
-            QProgressBar,
-            QPushButton,
-            QRadioButton,
-            QSlider,
-            QSpinBox,
-            QTimeEdit,
-        ]
 
         for w in instantiated_widgets:
             layout.addWidget(w)
 
-        # for w in widgets:
-        #     layout.addWidget(w())
+        if (debug_all):
+            for w in all_widgets:
+                layout.addWidget(w())
 
         widget = QWidget()
         widget.setLayout(layout)
 
         self.setCentralWidget(widget)
 
-    # def addPhotoElement(self):
-
-
     def dropEvent(self, event):
         files = [u.toLocalFile() for u in event.mimeData().urls()]
         for f in files:
-            print(f)
             self.addRemoveButton(f)
-
-        # self.filelabel.setText(f'Photos ({len(self.filelist)})\n------\n' + "\n".join(self.filelist))
 
     def dragEnterEvent(self, event):
         if event.mimeData().hasUrls():
