@@ -105,12 +105,49 @@ class MainWindow(QMainWindow):
         except Exception as e:
             print('error removing:', e)
 
+    generated_pdfs = {}
+
+    # Add a QHBoxLayout to the centralWidget's layout with a small QPushButton 'Open' that opens the filename and a QLabel of the filename
+    def addGeneratedPdf(self, filename):
+        layout = self.mainlayout
+
+        buttonlabel_container = QHBoxLayout()
+
+        label = QLabel(filename)
+        label.setStyleSheet(styles['files'])
+        label.setFixedWidth(200)
+
+        button = QPushButton("Open")
+        button.setFixedWidth(60)
+        button.clicked.connect(lambda: self.openPdf(filename))
+
+        buttonlabel_container.addWidget(button)
+        buttonlabel_container.addWidget(label)
+
+        self.centralWidget().layout().addItem(buttonlabel_container) # Added line for pyqt5 nuance (and I'm not sure if it's correct)
+        layout.addChildLayout(buttonlabel_container)  # Refactored line for correct function
+
+    # Open the pdf with the default system application
+    @pyqtSlot() # Refactored line
+    def openPdf(self, filename):
+        print(f'Opening {filename}')
+        import os
+        os.system(f'open {filename}')
+
     @pyqtSlot()
     def on_click(self):
-        filename = datetime.now().strftime("%Y-%m-%d %H-%M-%S")
+        timestamp = datetime.now()
+        filename = f'{timestamp.strftime("%Y-%m-%d %H-%M-%S")}.pdf'
         print(f'Portfolio generating... {filename}')
-        BasicPortfolio(f'{filename}.pdf', self.files)
+        BasicPortfolio(filename, self.files)
         print(f'Portfolio done! {filename}')
+        # Add a dict entry to generated_pdfs with the timestamp in ms as the key and object with the filename and files as fields
+        self.generated_pdfs[timestamp] = {
+            'filename': filename,
+            'files': self.files,
+        }
+        self.addGeneratedPdf(filename)
+
 
     def __init__(self):
         super().__init__()
@@ -136,10 +173,13 @@ class MainWindow(QMainWindow):
         files.setTitle(f'Photos ({len(self.filebox.children())})')
 
         layout = QFormLayout()
+        self.mainlayout = layout
 
         generate_button = QPushButton('Generate', self)
         generate_button.setToolTip('Generate a portfolio pdf')
         # generate_button.move(100, 70)
+        generate_button.setFixedWidth(60)
+        generate_button.setFixedHeight(60)
         generate_button.clicked.connect(self.on_click)
 
         instantiated_widgets = [files, generate_button]
