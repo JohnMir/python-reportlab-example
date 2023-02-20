@@ -1,3 +1,4 @@
+import os
 import sys
 from datetime import datetime
 
@@ -124,15 +125,16 @@ class MainWindow(QMainWindow):
         buttonlabel_container.addWidget(button)
         buttonlabel_container.addWidget(label)
 
-        self.centralWidget().layout().addItem(buttonlabel_container) # Added line for pyqt5 nuance (and I'm not sure if it's correct)
+        self.centralWidget().layout().addItem(
+            buttonlabel_container)  # Added line for pyqt5 nuance (and I'm not sure if it's correct)
         layout.addChildLayout(buttonlabel_container)  # Refactored line for correct function
 
     # Open the pdf with the default system application
-    @pyqtSlot() # Refactored line
+    @pyqtSlot()  # Refactored line
     def openPdf(self, filename):
-        print(f'Opening {filename}')
-        import os
-        os.system(f'open {filename}')
+        fullpath = f'{os.getcwd()}\\{filename}'
+        print(f'Opening {fullpath}')
+        os.startfile(fullpath)
 
     @pyqtSlot()
     def on_click(self):
@@ -147,7 +149,6 @@ class MainWindow(QMainWindow):
             'files': self.files,
         }
         self.addGeneratedPdf(filename)
-
 
     def __init__(self):
         super().__init__()
