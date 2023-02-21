@@ -304,8 +304,9 @@ class BasicPortfolio:
         self.elements.append(spacer)
 
         img = Image(photourl)
-        img.drawHeight = 2.5 * inch
-        img.drawWidth = 5.5 * inch
+        img.drawHeight = img.drawHeight/3 #600 # 2.5 * inch # 768 imageHeight vs drawHeight
+        img.drawWidth = img.drawWidth/3 #670 # 5.5 * inch # 1024
+        # Image(photourl, width=2 * inch, height=1 * inch, kind='proportional')
         self.elements.append(img)
 
         spacer = Spacer(10, 250)
